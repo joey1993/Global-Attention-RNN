@@ -167,39 +167,23 @@ def attention_selection(rnn_outputs,
 
     elif attention_choice == 3:
         hidden_size = attention_output.shape[1].value
-        #print(attention_output)
-        #print(global_attention_output)
         attention_output = tf.reshape(attention_output, [-1, 1, hidden_size])
         global_attention_output = tf.reshape(global_attention_output, [-1, 1, hidden_size])
         inputs = tf.concat([attention_output, global_attention_output], 1) #(?, 2, hidden_size)
-        
-
+    
         w_omega = tf.Variable(tf.random_normal([hidden_size, attention_size], stddev=0.1))
         b_omega = tf.Variable(tf.random_normal([attention_size], stddev=0.1))
         u_omega = tf.Variable(tf.random_normal([attention_size], stddev=0.1))
 
-
         v = tf.tanh(tf.tensordot(inputs, w_omega, axes=1) + b_omega)
         vu = tf.tensordot(v, u_omega, axes=1, name='vu')
         alphas = tf.nn.softmax(vu, name='alphas')
-        #print(alphas)
 
         output = tf.reduce_sum(inputs * tf.expand_dims(alphas, -1), 1)
-        #print(output)
-        #sys.exit()
         return output
 
     else:
         return attention_output
-
-
-
-
-
-
-
-
-
 
 
 
