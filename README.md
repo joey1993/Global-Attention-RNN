@@ -3,7 +3,7 @@
 
 ## Installation
 
-For training, a GPU is strongly recommended for speed. CPU is supported but training could be extremely slow.
+For training, a GPU is strongly recommended for speed. CPU is supported but training could be slow.
 
 ### Tensorflow
 
@@ -43,3 +43,8 @@ python train.py
 
 Here we compare Global Attention models with recent state-of-the-art models (Local Attention model, Multi-head Self-Attention model, LR model) on the RecSys2015 dataset and three private advertising datasets. All experiments are conducted on a 2.8 GHz Intel Core i7 CPU.
 
+## Evaluation
+
+Here we plot a heatmap with the attention weights from all proposed models and benchmarks. **GATT** shows closest connection to the **Editorial** column (Ground Truth).
+
+<p align="center"><img width="100%" src="docs/adv3.png"/></p>
