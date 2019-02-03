@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ## Data
 
-We mainly focus on the RecSys2015 dataset, and the code takes vowpal wabbit format [here](https://github.com/VowpalWabbit/vowpal_wabbit/wiki/Input-format) as input. 
+We mainly focus on the RecSys2015 dataset, and the code takes [vowpal wabbit format](https://github.com/VowpalWabbit/vowpal_wabbit/wiki/Input-format) as input. 
 However, due to the license issue, we are restricted to distribute this dataset.
 You should be able to get it [here](https://recsys.acm.org/recsys15/challenge/).
 
