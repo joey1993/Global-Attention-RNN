@@ -35,7 +35,7 @@ HIDDEN_SIZE = 50
 ATTENTION_SIZE = 50
 GLOBAL_ATTENTION_SIZE = 50
 KEEP_PROB = 0.5
-BATCH_SIZE = 64 
+BATCH_SIZE = 5 
 NUM_EPOCHS = 3  
 DELTA = 0.5
 LAMBDA1 = 0.01
@@ -47,7 +47,6 @@ LEARNING_RATE = 1e-3
 MODEL_PATH = 'model/model.pt'
 train_file = 'data/train.txt'
 test_file = 'data/test.txt'
-mapping_file = 'data/mapping.txt'
 LR_weight_file = 'data/weight.txt'
 
 print ("data statistics...")
@@ -146,8 +145,8 @@ merged = tf.summary.merge_all()
 
 # Batch generators
 print ("load data...")
-train_batch_generator_new = read_batch_dataset(train_file, BATCH_SIZE)
-test_batch_generator_new = read_batch_dataset(test_file, BATCH_SIZE)
+train_batch_generator = read_batch_dataset(train_file, BATCH_SIZE)
+test_batch_generator = read_batch_dataset(test_file, BATCH_SIZE)
 
 train_writer = tf.summary.FileWriter('./logdir/train', accuracy.graph)
 test_writer = tf.summary.FileWriter('./logdir/test', accuracy.graph)
@@ -180,7 +179,7 @@ if __name__ == "__main__":
             num_eval = num_batches // NUM_EVAL
             eval_index = 0 
             for b in tqdm(range(num_batches), ascii=True):
-                x_batch, y_batch, u_batch = next(train_batch_generator_new) 
+                x_batch, y_batch, u_batch = next(train_batch_generator) 
                 x_batch = zero_pad(x_batch, SEQUENCE_LENGTH)
                 LR_x_batch = LR_convert(x_batch, vocabulary_size)
                 seq_len = np.array([list(x).index(0) + 1 for x in x_batch])  # actual lengths of sequences
@@ -204,11 +203,11 @@ if __name__ == "__main__":
                     loss_train = sum(loss_list)/len(loss_list)
                     fpr, tpr, thresholds = metrics.roc_curve(lab_list, pred_list)
                     auc_train = metrics.auc(fpr, tpr)                    
-                    loss_list = []
+                    loss_list,lab_list,pred_list = [],[],[]
 
                     num_batches_test = num_testing_sample // BATCH_SIZE
                     for c in tqdm(range(num_batches_test), ascii=True):
-                        x_batch, y_batch, u_batch = next(test_batch_generator_new)
+                        x_batch, y_batch, u_batch = next(test_batch_generator)
                         x_batch = zero_pad(x_batch, SEQUENCE_LENGTH)
                         LR_x_batch = LR_convert(x_batch, vocabulary_size)
                         seq_len = np.array([list(x).index(0) + 1 for x in x_batch])  # actual lengths of sequences
@@ -224,6 +223,8 @@ if __name__ == "__main__":
                                                                  feed_dict=feed_dict) # alp: local att; beta: global att; 
 
                         loss_list.append(test_loss)
+                        pred_list += list(pred)
+                        lab_list += list(lab)
                         test_writer.add_summary(summary, c + (eval_index + num_eval * epoch) * num_batches_test)
 
                     fpr, tpr, thresholds = metrics.roc_curve(lab_list, pred_list)
@@ -236,6 +237,7 @@ if __name__ == "__main__":
 
                     if auc_test > best_auc:
                         best_auc = auc_test
+                        saver.save(sess, MODEL_PATH)
 
                     eval_index += 1
                     loss_list = []
