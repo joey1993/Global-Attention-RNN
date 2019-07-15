@@ -48,4 +48,5 @@ Here we compare Global Attention models with recent state-of-the-art models (Loc
 Here we plot a heatmap with the attention weights from all proposed models and benchmarks. **GATT** shows closest connection to the **Editorial** column (Ground Truth).
 
 <!-- ![heatmap of ADV3](./docs/adv3.png) -->
-<p align="center"><img src="./docs/adv3.png"/></p>
+![heatmap of ADV3](docs/adv3.png)
+<!-- <p align="center"><img src="./docs/adv3.png"/></p> -->
